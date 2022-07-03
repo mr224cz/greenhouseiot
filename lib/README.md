@@ -1,6 +1,6 @@
 
 
-dth.py - Library for DHT11 temperatur/humidity sensor, source: https://github.com/JurassicPork/DHT_PyCom/dth.py
+dth.py - Library for DHT11 temperatur/humidity sensor, source: https://github.com/JurassicPork/DHT_PyCom/blob/master/dth.py
 
 urequest.py - Library for sending data to Ubidots, source: https://github.com/micropython/micropython-lib/blob/master/urequests/urequests.py
 
