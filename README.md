@@ -1,4 +1,4 @@
-# Make the greenhouse modern - using IoT
+# The green house goes online - an IoT project to keep track on the green house 
 Author: Magnus Ramsbäck, mr224cz
 
 This report will present the steps required to have an IoT device in your greenhouse to check  useful things like temperature and humidity and at the same time being able to have visual indicators when thresholds are reached. 
@@ -26,7 +26,7 @@ The following were ordered from [Electrokit.com](https://www.electrokit.com)
 |[![](https://pycom.io/wp-content/uploads/2020/05/BFB77E75-96AE-4401-B6A2-0DDDC2271464.png =75x)](https://pycom.io/wp-content/uploads/2020/05/BFB77E75-96AE-4401-B6A2-0DDDC2271464.png)              | Pysense Expansion board |                                 |
 |[![](https://www.electrokit.com/uploads/productimage/41012/41012199.jpg =75x)](https://www.electrokit.com/uploads/productimage/41012/41012199.jpg)              | Breadboard              |              |                              |
 |[![](https://www.electrokit.com/uploads/productimage/40300/5mm-r%C3%B6d-diffus-768x576.jpg =75x)](https://www.electrokit.com/uploads/productimage/40300/5mm-r%C3%B6d-diffus-768x576.jpg) |LED Red 5mm             |              |                                 |
-| |Resistor 330 Ohm        |              |               |
+|[![](https://i.imgur.com/ohryKZ2.jpg)](https://i.imgur.com/ohryKZ2.jpg) |Resistor 330 Ohm        |              |               |
 |[![](https://www.electrokit.com/uploads/productimage/41003/41003181.jpg =75x)](https://www.electrokit.com/uploads/productimage/41003/41003181.jpg) |Jumper wire male/male different lengths | For connection between FiPy, breadboard and Pysense
 | Sensor kit - 25 modules  ||| 299
 |[![](https://www.electrokit.com/uploads/productimage/41015/41015728-1-768x576.jpg =75x)](https://www.electrokit.com/uploads/productimage/41015/41015728-1-768x576.jpg) |DHT11 Sensor (digital)  |Temperature and humidity sensor               | 
@@ -67,9 +67,12 @@ The above parts are the ones required to make this IoT device work. Since this d
 
 ## Computer setup
 
-This project started in [Atom IDE](https://atom.io) but after several different issues with Atom (and also seeing [this offical post](https://github.blog/2022-06-08-sunsetting-atom/) about Atom beeing discontinued) I changed to [Thonny IDE](https://thonny.org). Thonny is easy to use, and Python 3 is already included in the installation, so no extra applications/packages needs to be installed since MicroPython is a part of the Python programming language.
+It's always good to check if there is new firmware for your microcontroller and expansion board, specially if you just bought your hardware it might have been on a warehouse shelf for an unkown amount of time. When updating firmware on FiPy, **Pycom Firmware Update** is used. It's very straight forward to use, just have your FiPy connected to the computer (in this case on the Pysense expansion board) and follow the guide. For more detailed instructions and software downloads, see [Pycom Update Device Firmware](https://docs.pycom.io/updatefirmware/device/) guide.
 
-It's always good to check if there is new firmware for your microcontroller and expansion board, specially if you just bought your hardware it might have been on a warehouse shelf for an unkown amount of time. When updating firmware on FiPy, **Pycom Firmware Update** is used. It's very straight forward to use, just have your FiPy connected to the computer (in this case on the Pysense expansion board) and follow the guide. In normal case, choose Pybyte as type.
+To update firmware on the Pysense expansion board it's a bit more complicated procedure. The device must be in DFU mode to update firmware, it also need special drivers installed. 
+To enter DFU mode, hold down the safe mode button on the Pysense board (the button next to the SD card holder) while connecting the board to the computer with USB cable. The DFU mode only last 7 seconds, then it will boot normally. During thoose 7 seconds new drivers needs to be installed in order for the update to work. Instructions and necessary downloads can be found on [Pycom Updating Expansion Board Firmware](https://docs.pycom.io/updatefirmware/expansionboard/) page.
+
+This project started in [Atom IDE](https://atom.io), but after a short while it was just an annoying application to use, more or less every time Atom was started a project had to be chosen from the list (even though there was just one project) or else you couldn't upload files to the device, it sometime had connection problem with the device. The final nail in the coffin was reading [this offical post](https://github.blog/2022-06-08-sunsetting-atom/) about Atom beeing discontinued that made me decide to move all code development to [Thonny IDE](https://thonny.org). Thonny is easy to use, and Python 3 is already included in the installation, so no extra applications/packages needs to be installed since MicroPython is a part of the Python programming language. 
 
 
 To upload the MicroPython files you only have to right click the file and choose **Upload to /flash**. The path specified in the upload choice depends on current folder on your device so if you want to upload anything to the lib folder, just doubleclick the folder on the device before choosing the upload command.
@@ -85,23 +88,24 @@ machine.reset()
 
 Since the connections more or less rely on the fact that a breadboard is used this is just a development setup and shouldn't be used as a production device. 
 :::warning
-In this guide a DHT11 module has been used, meaning it already have required resistors, but if you are about to use a stand-alone DHT11 make sure to use resistors so you don't fry the sensor! The same goes with the LED, here a 330&#8486; resistor have been used when connecting the LED.
+**Note!** In this guide a DHT11 module has been used, meaning it already have required resistors, but if you are about to use a stand-alone DHT11 make sure to use resistors so you don't fry the sensor! The same goes with the LED, here a 330&#8486; resistor have been used when connecting the LED.
 :::
 
-![](https://i.imgur.com/UKrzcDd.jpg)
+
+![](https://i.imgur.com/DqwzAjz.jpg)
 
 
 | Wire color | Description | FiPy | Pysense |
 | -------- | -------- | -------- | --------------- |
 | <font color=red>Red</font>     | 5V | 28     | 28 |
 | Black   | GND       | 27    | 27 |
-| <font color=brown>Brown</font>   | 3.3V | 26 | 26 |
+| <font color=blue>Blue</font>   | 3.3V | 26 | 26 |
 | <font color=purple>Purple</font> |SDA |P22 |P22 |
 | <font color=pink>Pink | SCL     | P21 |P21 |
 | <font color=cyan>Cyan</font> | Data from DHT11 | P23 |- |
 | <font color=f9eb12>Yellow</font>| UART_RX | P0 | P0 |
 |<font color=orange>Orange</font>| UART_TX | P1 | P1 |
-|<font color=green>Green</font>| Signal LED | P12 | - |
+|<font color=green>Green</font>| 3.3V to LED | P12 | - |
 > In column FiPy and Pysense, if only a number, it refers to module PIN number, if beginning with a P it refers to the PIN name accordning to datasheets[<sup>1</sup>](#References) 
 
 :::info 
@@ -172,10 +176,12 @@ else:
 
 ```
 
+The complete code and required libraries for this project can be found on https://github.com/mr224cz/greenhouseiot
+
 
 ## Transmitting the data / connectivity
 
-When this report is written, WiFi is used as communication type. However, in the green house there is unfortunately very weak WiFi signal, the plan is to be able to use LTE, but a delayed SIM card activation has forced the use of WiFi. 
+When this report is written, WiFi is used as communication type. However, in the green house there is unfortunately very weak WiFi signal, the plan is to be able to use LTE, but a delayed SIM card activation has forced the use of WiFi instead. 
     
 Data is sent once every hour. A function to connect to WiFi is called. The function makes three attempts to connect to WiFi.
     
@@ -210,14 +216,15 @@ wlan = WLAN(mode=WLAN.STA)
 
 To use a function to connect to WiFi makes it also easy to implement other connection types later on, like for instance LTE, just create a new function that uses LTE instead and call that.
     
-To upload the data to Ubidots a webhook is used, this is just a URL string that send data to the server, the URL contains device ID and a token in order to authenticate the data, and then the data which can be multiple variables at the same time.
+To upload the data to Ubidots a webhook is used, this is just a URL string that send data to the server, the URL contains device ID and a token in order to authenticate the data, and then the data, which can be multiple variables at the same time.
   
     
 ## Presenting the data
 
 In Ubidots it's quite easy to build dashboards. You add widgets for each thing you want to present on the dashboard, there are 24 different widgets to choose from.
 ![](https://i.imgur.com/fRvvZcE.png)
-
+    
+    
 In the above pictures are some of the widgets available in Ubidots. For each widget there are several options to change for the appearence of the data, for example different color schemes depending on variable value.
 
 ![](https://i.imgur.com/xcYcEt6.jpg =235x)
@@ -230,39 +237,44 @@ Apart from specifying font and value range it is also possible to use color logi
 Each dashboard created can be shared for others to view, with the free version of Ubidots STEM you can have 3 dashboards. Even each single widget on the dashboard can be shared individually in the same way as the dashboard, either through a link, or with embedded code in an HTML iframe. 
 
 This project collect and send data to Ubidots once every hour. The data collected on Ubidots is saved one month, this is the limit of the free account, one month retention period.  
+    
+![](https://i.imgur.com/47Wlpqr.jpg)
 
-## Finalizing the design
+Above is the dashboard for this project, showing all values sent to Ubidots, also with some history graphs for temperature, humidity and the battery voltage.
     
 
+## Finalizing the design  
 
 
-One of the first running periods I only used `time.sleep()` when putting the FiPy in idle mode. This however drained the batteries in 6 hours (no charging before using the new batteries, start current was ~3.6V). But when changing to `machine.deepsleep()` instead improved batterytime quite dramatically. It was running for XX hours.
+
+One of the first running periods I only used `time.sleep()` when putting the FiPy in idle mode. This however drained the batteries in 6 hours (no charging before using the new batteries, start voltage was ~3.6V). But when changing to `machine.deepsleep()` instead improved batterytime quite dramatically. When using the batteries after recharge start voltage was a bit higher, 4.15V (as seen in dashboard above). Now it ran for 5 days and 6 hours before it was out of battery.
     
 For the choice of platform for visualization of data Ubidots was good for test and development, but with a retention period of just one month there isn't much you can use it for, and their paid subscriptions wasn't that cheap. In that case there are probably better services to use, both free and paid ones.
 
 One thing I feel would have been nice to have during development is a display for error output. Much easier to be able to check errors instead of having to connect it with a computer everytime.
 
-It's a pitty that I couldn't use/test LTE communication, then it might have worked in the green house.
-
 As mentioned, the enclosure was built by Lego bricks, nothing which was bought for this project, more of "build enclosure of something already available at home".
     
 :::info
 ![](https://i.imgur.com/xXXaVPR.jpg)
+    
 At the bottom we see the DHT11 with wiring from hole in the bottom of the box. The white and yellow plates at the top right works as hatches for the battery holder.
 :::
     
 :::info
 ![](https://i.imgur.com/wNfWdVM.jpg =800x)
+    
 Side view where battery holder can be seen at the lower right with the two hatches.     
 :::
 
     
 :::info
 ![](https://i.imgur.com/I4MP1ei.jpg)
-This was the goal for the project, beeing able to have it placed in the green house. But due to weak WiFi signal it was just measuring from inside my house.
+This was the goal for the project, beeing able to have it placed in the green house for measurements. I hoped to be able to test with LTE communication since this might have worked in the green house when the WiFi was too weak, but due to delays with SIM card activations no LTE communications have been tested in this project. 
 :::
 
 ## References
 
 <sup>1</sup>[Pycom Fipy datasheet](https://docs.pycom.io/datasheets/development/fipy/)
+    
 <sup>1</sup>[Pycom Pysense Expansion Board v 2.0 datasheet](https://docs.pycom.io/datasheets/expansionboards/pysense2/)
